@@ -93,7 +93,7 @@ You can use template tags to track the goals from the html. It's useful when tra
 ```jinja2
 {% load fathom }
 ......with link
-<a href="https://go-somewhere.com/link" {% click_goal "somewhere_link_clicked" 100) %}>Go somewhere?</a>
+<a href="https://go-somewhere.com/link" {% click_goal "somewhere_link_clicked" 100 %}>Go somewhere?</a>
 ......with form
 <form method="POST" {% submit_goal "registration_submit" %}>
 ```
