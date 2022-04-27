@@ -1,10 +1,11 @@
 import json
+import logging
 
 from django.conf import settings
 
 
-class GoalTrackFailure(Exception):
-    pass
+log = logging.getLogger(__name__)
+
 
 
 FATHOM_GOALS = getattr(settings, "FATHOM_GOALS", dict())
@@ -36,7 +37,7 @@ def track(request, goal: str, value: int = 0):
         goals.append(dict(goal=goal, value=value))
         request.session["_fathom_goals"] = json.dumps(goals)
     except AttributeError:
-        raise GoalTrackFailure("Please pass the instance of `HttpRequest` to track goals properly")
+        log.exception("Could not get goals from `request.session`. Is this request an instance of `HttpRequest`?")
 
 
 def fetch_goals(request):
@@ -46,4 +47,5 @@ def fetch_goals(request):
             return []
         return json.loads(goals)
     except AttributeError:
-        raise GoalTrackFailure("Please pass the instance of `HttpRequest` to track goals properly")
+        log.exception("Could not get goals from `request.session`. Is this request an instance of `HttpRequest`?")
+        return []
