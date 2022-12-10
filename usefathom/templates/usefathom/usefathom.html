@@ -4,8 +4,8 @@
 {% if fathom_goals %}
 <script type="text/javascript">
 window.addEventListener('load', (event) => {
-  {% for entry in fathom_goals %}
-  fathom.trackGoal("{{entry.goal}}", {{ entry.value }});
+  {% for goal, value in fathom_goals.items %}
+  fathom.trackGoal("{{ goal }}", {{ value }});
   {% endfor %}
 });
 </script>
