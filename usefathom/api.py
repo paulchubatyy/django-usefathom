@@ -37,8 +37,7 @@ def track(request, goal: str, value: int = 0):
         goals.update({goal: value})
         request.session["_fathom_goals"] = json.dumps(goals)
     except AttributeError:
-        log.exception("Could not get goals from `request.session`. Is this request an instance of `HttpRequest`?")
-
+        pass
 
 def fetch_goals(request):
     try:
@@ -47,5 +46,4 @@ def fetch_goals(request):
             return {}
         return json.loads(goals)
     except AttributeError:
-        log.exception("Could not get goals from `request.session`. Is this request an instance of `HttpRequest`?")
         return {}
