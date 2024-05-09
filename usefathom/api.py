@@ -1,3 +1,4 @@
+from typing import Optional
 import json
 import logging
 
@@ -7,43 +8,32 @@ from django.conf import settings
 log = logging.getLogger(__name__)
 
 
-
-FATHOM_GOALS = getattr(settings, "FATHOM_GOALS", dict())
-
-
-def track(request, goal: str, value: int = 0):
-    """Track Fathom goal
+def track(request, event: str, value: Optional[int] = None):
+    """Track Fathom events
 
     Args:
         request ([type]): HttpRequest
-        goal (str): Fathom goal code or alias
-        value (int, optional): Monetary value attached to goal. Defaults to 0.
+        goal (str): Fathom events
+        value (int, optional): Monetary value attached to event. Defaults to None.
 
     Raises:
         TypeError: Passing something else than request
-        GoalTrackFailure:  not enabled
 
     Returns:
-        [type]: [description]
+        None: does not return anything
     """
     try:
-        goals = request.session.get("_fathom_goals", {})
-        if not goals:
-            goals = {}
-        else:
-            goals = json.loads(goals)
-        if goal in FATHOM_GOALS:
-            goal = FATHOM_GOALS[goal]
-        goals.update({goal: value})
-        request.session["_fathom_goals"] = json.dumps(goals)
+        events = request.session.get("_fathom_events", "{}")
+        fathom_events = json.loads(events)
+        fathom_events.update({event: value})
+        request.session["_fathom_events"] = json.dumps(events)
     except AttributeError:
         pass
 
-def fetch_goals(request):
+
+def fetch(request):
     try:
-        goals = request.session.pop("_fathom_goals", None)
-        if not goals:
-            return {}
-        return json.loads(goals)
+        events = request.session.pop("_fathom_events", "{}")
+        return json.loads(events)
     except AttributeError:
         return {}

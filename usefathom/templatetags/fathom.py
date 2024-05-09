@@ -1,24 +1,22 @@
-from django import template
+from typing import Optional
 
-from usefathom import GOALS
+from django import template
 
 register = template.Library()
 
 
 @register.inclusion_tag("usefathom/click.html")
-def click_goal(goal: str, value: int = 0):
-    return _set_context(goal, value)
+def click_event(event: str, value: Optional[int] = None):
+    return _set_context(event, value)
 
 
 @register.inclusion_tag("usefathom/submit.html")
-def submit_goal(goal: str, value: int = 0):
-    return _set_context(goal, value)
+def submit_goal(event: str, value: Optional[int] = None):
+    return _set_context(event, value)
 
 
-def _set_context(goal: str, value: int):
-    if goal in GOALS:
-        goal = GOALS[goal]
-    return {
-        "goal": goal,
-        "value": value,
-    }
+def _set_context(event: str, value: Optional[int] = None):
+    ret = dict(event=event)
+    if value is not None:
+        ret.update(value=value)
+    return ret
