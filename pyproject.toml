@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-usefathom"
-version = "2.0.2"
+version = "2.0.3"
 description = "A Django app to integrate Fathom Analytics into your project"
 authors = ["Paul Chubatyy <xobb@citylance.biz>"]
 license = "MIT"
