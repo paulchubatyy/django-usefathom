@@ -1,11 +1,6 @@
 from typing import Optional
-import json
-import logging
 
-from django.conf import settings
-
-
-log = logging.getLogger(__name__)
+EVENTS_SESSION_KEY = "_fathom_events"
 
 
 def track(request, event: str, value: Optional[int] = None):
@@ -23,17 +18,15 @@ def track(request, event: str, value: Optional[int] = None):
         None: does not return anything
     """
     try:
-        events = request.session.get("_fathom_events", "{}")
-        fathom_events = json.loads(events)
-        fathom_events.update({event: value})
-        request.session["_fathom_events"] = json.dumps(events)
+        events = request.session.pop(EVENTS_SESSION_KEY, dict())
+        events.update({event: value})
+        request.session[EVENTS_SESSION_KEY] = events
     except AttributeError:
         pass
 
 
 def fetch(request):
     try:
-        events = request.session.pop("_fathom_events", "{}")
-        return json.loads(events)
+        return request.session.pop(EVENTS_SESSION_KEY, dict())
     except AttributeError:
         return {}
